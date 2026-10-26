@@ -20,4 +20,4 @@
 
 ## 意见反馈
 
-- 请通过 GitHub Issues 反馈：<https://github.com/myleemartin/luminar/issues>sinoyouth@qq.com
+- 请通过 GitHub Issues 反馈：<https://github.com/myleemartin/luminar/issues>
