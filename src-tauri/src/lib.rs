@@ -44,9 +44,6 @@ pub fn run() {
                 .app_config_dir()
                 .map_err(|e| format!("无法定位应用配置目录：{e}"))?;
 
-            // 0.11 起软件改名为「星星脱敏 / Luminar」、标识符变更，自动迁移旧版配置与模型
-            migrate_legacy_layout(&config_dir);
-
             let config = ConfigStore::init(config_dir.clone())?;
 
             // 模型目录：环境变量 > 用户配置目录 > 安装包内置
@@ -102,59 +99,6 @@ pub fn run() {
         ])
         .run(tauri::generate_context!())
         .expect("星星脱敏启动失败");
-}
-
-// ---------------------------------------------------------------------------
-// 旧版配置迁移
-// ---------------------------------------------------------------------------
-
-/// 从旧标识符的配置目录迁移规则、设置与 OCR 模型。
-///
-/// 支持两代旧目录：
-/// - 旧品牌标识符
-/// - `cn.guanzhu.legalredact`（更早版本）
-/// 只在「新目录还没有 rules.json」时执行一次，绝不覆盖用户已有数据。
-fn migrate_legacy_layout(new_dir: &Path) {
-    if new_dir.join("rules.json").exists() {
-        return;
-    }
-    let Some(parent) = new_dir.parent() else {
-        return;
-    };
-    let old_dir = ["cn.tuominxing.app", "cn.guanzhu.legalredact"]
-        .iter()
-        .map(|name| parent.join(name))
-        .find(|dir| dir.is_dir());
-    let Some(old_dir) = old_dir else {
-        return;
-    };
-    if let Err(e) = fs::create_dir_all(new_dir) {
-        eprintln!("[启动] 创建新版配置目录失败：{e}");
-        return;
-    }
-
-    let mut migrated = Vec::new();
-    for name in ["rules.json", "settings.json"] {
-        let src = old_dir.join(name);
-        if src.is_file() && fs::copy(&src, new_dir.join(name)).is_ok() {
-            migrated.push(name);
-        }
-    }
-    let old_models = old_dir.join("models");
-    if old_models.is_dir() {
-        if let Err(e) = copy_dir_all(&old_models, &new_dir.join("models")) {
-            eprintln!("[启动] 迁移旧版 OCR 模型失败：{e}");
-        } else {
-            migrated.push("models/");
-        }
-    }
-    if !migrated.is_empty() {
-        eprintln!(
-            "[启动] 已从旧版目录迁移：{} → {}",
-            old_dir.display(),
-            new_dir.display()
-        );
-    }
 }
 
 fn copy_dir_all(src: &Path, dst: &Path) -> std::io::Result<()> {
