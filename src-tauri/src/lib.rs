@@ -111,7 +111,7 @@ pub fn run() {
 /// 从旧标识符的配置目录迁移规则、设置与 OCR 模型。
 ///
 /// 支持两代旧目录：
-/// - `cn.tuominxing.app`（0.10 旧品牌）
+/// - 旧品牌标识符
 /// - `cn.guanzhu.legalredact`（更早版本）
 /// 只在「新目录还没有 rules.json」时执行一次，绝不覆盖用户已有数据。
 fn migrate_legacy_layout(new_dir: &Path) {
