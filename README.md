@@ -404,7 +404,7 @@ npm run tauri build
 产物：
 
 - `src-tauri\target\release\Luminar.exe`（主程序）
-- `src-tauri\target\release\bundle\nsis\Luminar_0.11.0_x64-setup.exe`（安装包，中文界面）
+- `src-tauri\target\release\bundle\nsis\*.exe`（安装包，中文界面）
 
 前置条件：
 
@@ -424,7 +424,7 @@ npm run tauri build
 产物与分发说明：
 
 - `src-tauri\target\release\Luminar.exe`：主程序（需同目录 resources/）；
-- `src-tauri\target\release\bundle\nsis\Luminar_0.11.0_x64-setup.exe`：NSIS 安装包，
+- `src-tauri\target\release\bundle\nsis\*.exe`：NSIS 安装包，
   简体中文、**仅当前用户安装**，无需管理员权限，适合律所内网统一分发；
 - 未签名的安装包会触发 SmartScreen“更多信息 → 仍要运行”，正式分发建议购买代码签名证书；
 
