@@ -1,0 +1,87 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "星星脱敏",
+  "version": "0.11.0",
+  "identifier": "cn.luminar.app",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "星星脱敏 · 本地离线",
+        "width": 1480,
+        "height": 920,
+        "minWidth": 1120,
+        "minHeight": 700,
+        "center": true,
+        "resizable": true,
+        "fullscreen": false,
+        "theme": "Light",
+        "acceptFirstMouse": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "app",
+      "dmg",
+      "nsis"
+    ],
+    "category": "Productivity",
+    "shortDescription": "星星脱敏",
+    "longDescription": "面向律师行业的本地离线文书脱敏工具：批量导入合同、判决书、起诉状、证据卷宗，自动识别身份证号、手机号、住址、银行卡、姓名、案号等敏感信息，人工复核后导出脱敏文本并生成合规留痕日志。全部处理在本机完成，不联网、不上传。",
+    "copyright": "© 2026 星星脱敏项目组 · PolyForm Noncommercial 1.0.0",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "resources": [
+      "resources/*",
+      "resources/models/*",
+      "resources/models/ner/*"
+    ],
+    "macOS": {
+      "minimumSystemVersion": "10.15",
+      "dmg": {
+        "windowSize": {
+          "width": 660,
+          "height": 400
+        },
+        "appPosition": {
+          "x": 180,
+          "y": 190
+        },
+        "applicationFolderPosition": {
+          "x": 480,
+          "y": 190
+        }
+      },
+      "infoPlist": "Info.plist"
+    },
+    "windows": {
+      "nsis": {
+        "languages": [
+          "SimpChinese"
+        ],
+        "displayLanguageSelector": false,
+        "installMode": "currentUser"
+      },
+      "webviewInstallMode": {
+        "type": "embedBootstrapper",
+        "silent": true
+      }
+    }
+  }
+}

@@ -1,0 +1,34 @@
+name: 💡 功能建议
+description: 新识别类型、交互改进、导出需求等
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        请说明真实办案场景，越具体越好；涉及法律行业术语时请给出示例文字。
+  - type: textarea
+    id: scenario
+    attributes:
+      label: 使用场景
+      description: 你在处理什么类型的卷宗？现在怎么做？哪里低效？
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 期望的方案
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 你考虑过的替代方案
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: 是否愿意参与
+      options:
+        - label: 我可以提供虚构测试样例
+        - label: 我可以帮忙写规则 / 测试
+        - label: 我可以提交 PR

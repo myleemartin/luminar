@@ -1,0 +1,59 @@
+name: 🐞 缺陷报告
+description: 导入、识别、复核、导出或 OCR 出问题
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈。请先确认：
+        1. 使用的是最新版本（当前 0.11.0）；
+        2. 已查看 [README](README.md) 的「已知限制」与「常见打包问题」。
+        请勿上传真实案卷；如需提供样例，请先脱敏或使用虚构数据。
+  - type: input
+    id: version
+    attributes:
+      label: 软件版本
+      placeholder: "0.11.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: 操作系统
+      options:
+        - macOS (Apple Silicon)
+        - macOS (Intel)
+        - Windows 11
+        - Windows 10
+        - 其他
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      description: 从导入开始，一步一步写清楚
+      placeholder: |
+        1. 导入 xx.docx
+        2. 点击「重新识别」
+        3. ……
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望结果 / 实际结果
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 终端日志或截图
+      description: 应用从终端启动时会输出 `[启动]` / `[导入]` 日志；macOS 可执行 `.../Contents/MacOS/luminar`
+      render: shell
+  - type: input
+    id: fileinfo
+    attributes:
+      label: 出问题的文件类型与规模（不要上传原件）
+      placeholder: "扫描版 PDF，共 86 页，约 40MB"

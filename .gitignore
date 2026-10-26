@@ -1,0 +1,29 @@
+# 依赖与构建产物
+node_modules/
+dist/
+src-tauri/target/
+src-tauri/gen/
+
+# 运行时下载的二进制（用 scripts/fetch_pdfium.sh 获取）
+src-tauri/resources/libpdfium.*
+src-tauri/resources/pdfium.dll
+src-tauri/resources/libpdfium.so
+
+# 根目录的开发用模型目录（安装包内置模型已提交到 src-tauri/resources/models/）
+/models/
+/models_v*/
+
+# 本地打好的安装包
+/release/
+
+# 系统
+.DS_Store
+*.log
+
+# 开发环境
+.venv/
+__pycache__/
+*.pyc
+.env
+.env.local
+.idea/

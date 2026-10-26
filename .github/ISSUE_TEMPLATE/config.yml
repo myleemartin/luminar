@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🔐 安全问题
+    url: https://github.com/myleemartin/luminar/security/policy
+    about: 请勿在 Issue 中公开安全漏洞，按 SECURITY.md 私下报告
+  - name: 💬 使用问题 / 讨论
+    url: https://github.com/myleemartin/luminar/discussions
+    about: 安装、打包、规则写法等问题可先在 Discussions 搜索

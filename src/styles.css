@@ -1,0 +1,242 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #app {
+    height: 100%;
+  }
+  body {
+    @apply bg-paper font-sans text-ink-900 antialiased;
+  }
+  ::selection {
+    background: rgba(201, 120, 79, 0.25);
+  }
+  ::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(27, 59, 54, 0.18);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(27, 59, 54, 0.32);
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  select,
+  input[type="text"],
+  input[type="number"] {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center gap-1.5 rounded-lg bg-ink-800 px-3 py-1.5 text-xs font-medium text-paper shadow-sm transition hover:bg-ink-700 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center gap-1.5 rounded-lg border border-ink-900/10 bg-white px-3 py-1.5 text-xs text-ink-700 transition hover:border-ink-900/20 hover:bg-ink-50 disabled:cursor-not-allowed disabled:opacity-40;
+  }
+  .btn-danger {
+    @apply inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] text-bronze-500 transition hover:bg-bronze-50;
+  }
+  .input {
+    @apply rounded-lg border border-ink-900/15 bg-white px-2.5 py-1.5 text-xs text-ink-800 outline-none transition focus:border-ink-500 focus:ring-2 focus:ring-ink-500/15;
+  }
+  .mode-btn {
+    @apply rounded px-2.5 py-1 text-[11px] text-ink-500 transition hover:text-ink-800;
+  }
+  .mode-btn.active {
+    @apply bg-ink-800 text-paper;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full border border-ink-900/10 bg-white px-2 py-0.5 text-[10px] text-ink-600 transition hover:border-ink-900/20;
+  }
+  .chip.active {
+    @apply border-ink-800 bg-ink-800 text-paper;
+  }
+
+  /* ---- 正文高亮 ---- */
+  .hit {
+    @apply cursor-pointer rounded-[2px] px-[1px] transition;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    border-bottom: 1px solid rgba(27, 59, 54, 0.18);
+  }
+  .hit:hover {
+    filter: brightness(0.95);
+  }
+  .hit.disabled {
+    @apply line-through opacity-45;
+    border-bottom-style: dotted;
+  }
+  .hit.active {
+    box-shadow: 0 0 0 2px #a34a2a;
+  }
+  .hit.manual::after {
+    content: "手";
+    font-size: 8px;
+    vertical-align: super;
+    margin-left: 1px;
+    color: #a34a2a;
+  }
+
+  .cat-id_card {
+    background: #fde68a;
+  }
+  .cat-phone {
+    background: #bfdbfe;
+  }
+  .cat-landline {
+    background: #bae6fd;
+  }
+  .cat-bank_card {
+    background: #ddd6fe;
+  }
+  .cat-email {
+    background: #a5f3fc;
+  }
+  .cat-address {
+    background: #99f6e4;
+  }
+  .cat-person_name {
+    background: #fecdd3;
+  }
+  .cat-agent {
+    background: #fed7aa;
+  }
+  .cat-org_name {
+    @apply bg-slate-500/10 text-slate-600 ring-slate-500/20;
+  }
+
+  .cat-law_firm {
+    background: #c7d2fe;
+  }
+  .cat-case_number {
+    background: #fca5a5;
+  }
+  .cat-court {
+    background: #d6d3d1;
+  }
+  .cat-court_code {
+    background: #e9d5ff;
+  }
+  .cat-credit_code {
+    background: #bbf7d0;
+  }
+  .cat-custom {
+    background: #fef08a;
+  }
+
+  .redacted {
+    @apply rounded-[2px] bg-ink-100 px-[1px] text-ink-700;
+    border-bottom: 1px dashed #a34a2a;
+  }
+
+  /* ---- 文件列表 ---- */
+  .file-item {
+    @apply flex cursor-pointer items-start gap-2 rounded-lg px-2 py-2 transition hover:bg-ink-50;
+  }
+  .file-item.active {
+    @apply bg-ink-800 text-paper hover:bg-ink-800;
+  }
+  .file-item.active .file-meta {
+    @apply text-ink-200;
+  }
+
+  /* ---- 识别结果卡片 ---- */
+  .finding-card {
+    @apply cursor-pointer rounded-lg border border-transparent bg-white px-3 py-2 transition hover:border-ink-900/10 hover:shadow-sm;
+  }
+  .finding-card.active {
+    @apply border-bronze-500/60 bg-bronze-50/60;
+  }
+  .finding-card.off {
+    @apply opacity-55;
+  }
+
+  /* ---- 弹窗 ---- */
+  .modal-backdrop {
+    @apply fixed inset-0 z-50 flex items-center justify-center bg-ink-900/25 p-6 backdrop-blur-sm;
+  }
+  .modal {
+    @apply flex max-h-[88vh] w-full flex-col overflow-hidden rounded-2xl bg-white shadow-pop;
+  }
+  .modal-head {
+    @apply flex items-center gap-2 border-b border-ink-900/10 px-5 py-3;
+  }
+  .modal-title {
+    @apply font-serif text-sm font-semibold text-ink-800;
+  }
+  .modal-body {
+    @apply min-h-0 flex-1 overflow-y-auto;
+  }
+  .modal-foot {
+    @apply flex items-center justify-end gap-2 border-t border-ink-900/10 bg-paper/50 px-5 py-3;
+  }
+  .field-label {
+    @apply mb-1 block text-[11px] font-medium text-ink-600;
+  }
+  .field-hint {
+    @apply mt-1 text-[10px] leading-relaxed text-ink-400;
+  }
+}
+
+/* 对照视图两列 */
+.compare-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+.compare-pane .pane-label {
+  position: sticky;
+  top: -1.5rem;
+  z-index: 1;
+  display: block;
+  margin-bottom: 0.5rem;
+  padding: 0.35rem 0.6rem;
+  font-family: inherit;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: #4a7269;
+  background: #f7f4ec;
+  border-bottom: 1px solid rgba(18, 36, 31, 0.08);
+}
+.compare-pane .pane-body {
+  white-space: pre-wrap;
+  word-break: break-word;
+  border-radius: 2px;
+  background: #fff;
+  padding: 1.5rem 1.25rem;
+  box-shadow: 0 1px 2px rgba(18, 36, 31, 0.05), 0 8px 30px rgba(18, 36, 31, 0.06);
+  font-family: "Songti SC", "STSong", "SimSun", serif;
+  font-size: 14px;
+  line-height: 1.95;
+}
+
+/* 单页纸张版式（由 renderPreview 动态创建，避免影响对照视图） */
+.paper-pane {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2.4rem 2.6rem;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(18, 36, 31, 0.05), 0 8px 30px rgba(18, 36, 31, 0.06);
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: "Songti SC", "STSong", "SimSun", serif;
+  font-size: 15px;
+  line-height: 1.95;
+  letter-spacing: 0.01em;
+  color: #12241f;
+}

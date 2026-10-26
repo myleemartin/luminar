@@ -1,0 +1,68 @@
+[package]
+name = "luminar"
+version = "0.11.0"
+description = "星星脱敏 · 律师行业本地离线文书脱敏工具"
+authors = ["星星脱敏项目组"]
+edition = "2021"
+rust-version = "1.77"
+license-file = "../LICENSE"
+repository = "https://github.com/myleemartin/luminar"
+default-run = "luminar"
+
+# 说明：lib 名为 Tauri 移动端约定，桌面端同样需要。
+[lib]
+name = "luminar_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+# ---------- 桌面框架 ----------
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+
+# ---------- 基础库 ----------
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+anyhow = "1"
+log = "0.4"
+regex = "1"
+once_cell = "1"
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+encoding_rs = "0.8"
+sha2 = "0.10"
+walkdir = "2"
+
+# ---------- 文档解析 ----------
+lopdf = "0.46"                                   # PDF 结构解析、文本抽取兜底、导出装配
+pdfium-render = { path = "vendor/pdfium-render", features = ["image"] }  # PDF 渲染 / 字符级坐标
+zip = { version = "2", default-features = false, features = ["deflate"] }
+roxmltree = "0.21"                               # docx XML 只读解析（保留排版的定点改写）
+docx-rs = "0.4"                                  # docx 生成（TXT 转 Word、规则说明、日志）
+
+# ---------- OCR ----------
+# 纯 Rust 推理（tract），不依赖系统 C++ 运行库，符合静态编译/离线要求。
+# 若打包体积敏感，可关闭 default-features 后去掉 ocr-paddle 特性。
+tract-onnx = { version = "0.23", optional = true }
+image = { version = "0.25", default-features = false, features = ["jpeg", "png", "bmp", "tiff"] }
+cfb = "0.15"
+
+[features]
+default = ["ocr-paddle"]
+# PaddleOCR 检测 + 识别模型（ONNX）本地推理
+ocr-paddle = ["dep:tract-onnx"]
+
+# 开发模式下把依赖（尤其是 tract 推理）编译为优化版本，
+# 保证 OCR 在 cargo run / cargo test 时也有可接受的速度；自身代码仍保留调试信息。
+[profile.dev.package."*"]
+opt-level = 2
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true
