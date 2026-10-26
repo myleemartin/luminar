@@ -1,13 +1,52 @@
 # 星星脱敏 · AI 助手部署与使用说明
 
 > 这份文档是写给 AI 助手（Claude Code、Codex、Cursor、OpenClaw、DSH 等）看的。
-> 你的任务不是“把项目 clone 下来就结束”，而是：**评估环境 → 下载正确包 → 安装/解压 → 在对话框里一步一步告诉用户怎么打开和使用**。
+> 你的任务不是“把项目 clone 下来就结束”，而是：**只读评估环境 → 把正确安装包直接下载到用户桌面（Windows 最多解压到桌面）→ 在对话框里一步一步告诉用户怎么打开和使用**。
+> 下面的「硬性操作边界」优先级最高，任何其他章节、经验或用户催促都不能覆盖。
 >
 > 项目地址：`https://github.com/myleemartin/luminar`
 > 如果该地址打不开、仓库为空或没有 Release，说明项目尚未正式发布；不要改用第三方下载站，
 > 直接告诉用户“仓库/Release 还没有发布”，请用户提供安装包或 Release 链接。
 
-## 0. 先记住三件事
+## 0. 硬性操作边界（最高优先级，必须写死执行）
+
+> 这一节覆盖全文。违反这些规则会导致 Windows 端路径/权限/运行错误。
+
+1. **下载位置只能是用户桌面。**
+   - macOS：直接下载 `.dmg` 到 `~/Desktop/`；
+   - Windows：直接下载 `.zip` 到 `%USERPROFILE%\Desktop\`；
+   - 不要下载到 `Downloads`、临时目录、项目目录、网盘同步目录或任何子文件夹。
+   - 不要移动、改名、复制或另存下载好的安装包。
+2. **最多只允许一个额外操作：Windows 解压 zip 到桌面。**
+   - 只有 Windows 的 `.zip` 允许解压，而且必须解压到桌面；
+   - macOS 的 `.dmg` 绝对不要打开、挂载、解压、拖拽或安装；
+   - Windows 解压后不要再移动/重命名/复制 `resources`；
+   - 不要创建桌面快捷方式、`.lnk`、`.cmd`、`.bat`、启动脚本或任何命令行入口来指向包内文件。
+3. **除第 1、2 条外，不允许做任何其他操作。**
+   包括但不限于：
+   - 不双击/运行 `Luminar.exe` 或 `星星脱敏.app`；
+   - 不打开 DMG、不挂载 DMG、不把 App 拖到「应用程序」；
+   - 不安装、不卸载、不修复、不注册、不写注册表、不改系统设置；
+   - 不修改、移动、删除、重命名解压出来的任何文件；
+   - 不执行 `git clone`、`npm`、`cargo`、源码构建或打包；
+   - 不校验哈希、不清理 macOS 隔离属性、不关闭 SmartScreen、不改杀软；
+   - 不创建快捷方式、`.lnk`、`.cmd`、`.bat`、启动脚本，不用命令行去链接包内的 exe/app。
+4. **发布包解压后就是完整运行目录，正常情况下直接运行，不要补任何东西。**
+   - 不要往目录里加文件、改配置、改路径、改文件名或重新打包；
+   - 不要用快捷方式、`.cmd`、`.bat`、启动脚本包装 `Luminar.exe`；
+   - 解压后直接让用户双击 `Luminar.exe` 即可。
+
+5. **只有缺少运行环境时才允许补环境，且只补缺失的那一个。**
+   - 优先使用 `*_full_offline.zip`，它已内置 WebView2，正常情况下不需要任何额外环境；
+   - 只有在完整离线包不可用、且 Windows 确实缺少 WebView2 时，才允许安装 WebView2 Runtime；
+   - macOS 不需要额外环境；
+   - 不允许安装 Python、PaddleOCR、Node.js、Rust、LibreOffice 或任何“看起来可能需要”的软件；
+   - 补完环境立即停止，不再做其他操作。
+6. **操作完成后，必须在对话框里告诉用户怎么操作。**
+   - 说清楚文件在桌面的完整名称、是否需要双击、双击后出现什么、再点哪里；
+   - 不要把“下载完成”当成任务完成，也不要让用户自己去猜。
+
+## 0.1 选包原则
 
 1. **不要要求普通用户安装 Python、PaddleOCR、PaddlePaddle、Node.js、Rust 或 LibreOffice。**
    发布包已经内置 OCR 模型、增强脱敏模型、pdfium 和运行库。
@@ -65,9 +104,8 @@ $paths | ForEach-Object { if (Test-Path $_) { Get-ChildItem $_ } }
 - 标准包解压后约 50 MB；完整离线包解压后约 720 MB，预留 **1.2 GB** 空间更稳。
 - macOS Universal 同时支持 Intel（macOS 10.15+）和 Apple Silicon（macOS 11+）；
   Windows 包是 x64（Windows 10/11，Windows on ARM 走 x64 模拟）。
-- Windows 安装/解压到用户有写权限的目录（桌面、`D:\Luminar`、`%LOCALAPPDATA%\Programs`），
-  不要放 `C:\Program Files` 根下再让普通用户写配置。
-- macOS 解压 DMG 后建议拖到「应用程序」。
+- **AI 不安装、不选择安装目录**；只把安装包下载到桌面。Windows 只允许把 zip 解压到桌面。
+- 桌面是唯一允许的下载落点；不要为了让路径“更整齐”而改到 `D:\Luminar` 或 `%LOCALAPPDATA%`。
 
 ## 2. 下载项目（按评估结果选包）
 
@@ -81,22 +119,23 @@ $paths | ForEach-Object { if (Test-Path $_) { Get-ChildItem $_ } }
 | Windows（标准） | `Luminar_0.11.0_windows_x64_portable.zip` | 已装 WebView2 |
 | Windows（完整离线） | `Luminar_0.11.0_windows_x64_full_offline.zip` | 未装 WebView2 / 内网 / 不确定（约 326 MB） |
 
-步骤：
+操作步骤（**只能做这些**）：
 
-1. 打开 `https://github.com/myleemartin/luminar/releases`
-2. 选最新 Release，下载对应文件；
-3. 同时下载同名 `.sha256`，校验：
-   - macOS：`shasum -a 256 <文件>`
-   - Windows：`Get-FileHash <文件> -Algorithm SHA256`
-4. 校验值不一致就不要运行，重新下载。
+1. 打开 `https://github.com/myleemartin/luminar/releases`；
+2. 选最新 Release，把对应文件**直接下载到桌面**：
+   - macOS：`~/Desktop/Luminar_0.11.0_universal.dmg`；
+   - Windows：`%USERPROFILE%\Desktop\Luminar_0.11.0_windows_x64_full_offline.zip`（推荐）或标准包；
+3. Windows 允许把该 zip **解压到桌面**；macOS 到此为止，不要打开 DMG；
+4. 不要移动/改名、不要运行任何程序、不要创建快捷方式或 CMD/批处理；
+5. 立刻在对话框里按第 3 节告诉用户下一步。
 
-如果 Release 不存在，但用户要求从源码构建，见第 6 节；否则停止并告知用户。
+如果 Release 不存在：停止，不要 clone、不要构建、不要从第三方下载站找包；直接告诉用户“Release 还没有发布”。
 
 ## 3. 安装 / 打开（必须按步骤说给用户听）
 
 > ⚠️ 这一节是硬要求：**你必须在对话框里把下面步骤讲清楚**，不能只说“下载好了”。
 > 好的说法示例：
-> “我已经把安装包下载到 `~/Downloads/Luminar_0.11.0_universal.dmg`。
+> “我已经把安装包下载到桌面：`~/Desktop/Luminar_0.11.0_universal.dmg`。
 > 现在请你：1）双击这个 DMG；2）桌面上会出现「星星脱敏」磁盘图标；3）双击磁盘图标；
 > 4）在窗口里双击「星星脱敏.app」。打开后回我一句‘已打开’，我再带你导入第一份文书。”
 > 不要只回复“完成”“已部署”。
@@ -115,8 +154,8 @@ $paths | ForEach-Object { if (Test-Path $_) { Get-ChildItem $_ } }
 
 ### 3.2 Windows（标准包和完整离线包步骤一样）
 
-1. **完整解压** zip 到本地目录，例如 `D:\Luminar` 或桌面；不要直接在压缩包里双击；
-2. 进入解压后的 `星星脱敏` 文件夹；
+1. **AI 只允许把 zip 解压到桌面**（默认会得到桌面上的 `Luminar` 文件夹）；不要解压到 `D:\` 或其他目录；
+2. 告诉用户进入桌面上的 `Luminar` 文件夹；
 3. **双击 `Luminar.exe`**（Windows 没有桌面图标，必须点 EXE）；
 4. 出现“已保护你的电脑 / 未知发布者”时：点「更多信息」→「仍要运行」；
 5. 不要只把 `Luminar.exe` 单独拷走，必须保留同目录 `resources\`；
@@ -172,37 +211,28 @@ $paths | ForEach-Object { if (Test-Path $_) { Get-ChildItem $_ } }
 | `.wps` 失败 | 先确认是否是 OOXML 版；二进制 WPS/加密文档需要本机 LibreOffice，或另存 `.docx` |
 | 导出多出两个文件 | 那是 `_脱敏日志.json` / `.txt`，不是文书格式；不要勾选日志即可 |
 | 文件窗口按钮是英文 | 系统原生“打开/取消”跟随操作系统显示语言：中文 Windows/macOS 显示中文；英文系统仍显示英文。应用内标题和筛选器已中文化，Mac 已补中文本地化。不要为此改系统语言 |
-| 杀软误报 | 未签名程序常见；校验 SHA256 后加入信任，或向用户说明来源 |
+| 杀软误报 | 未签名程序常见；向用户说明来源，不要自行关闭杀软或改系统设置 |
 
-## 6. 从源码构建（仅当没有 Release 且用户明确要求）
+## 6. 禁止源码构建
 
-前置：Node.js 20+、Rust stable、系统构建工具。
-
-```bash
-git clone https://github.com/myleemartin/luminar.git
-cd luminar
-npm ci
-./scripts/fetch_pdfium.sh        # Windows: .\scripts\fetch_pdfium.ps1
-npm run tauri build
-```
-
-模型已经随仓库提交，不需要 `fetch_ocr_models`。构建产物在 `src-tauri/target/release/bundle/`。
-普通律师用户不要走源码构建；优先 Release 包。
+面向普通用户的部署，AI **不得**执行 `git clone`、`npm`、`cargo`、Tauri 构建或任何编译命令。
+没有 Release 时停止并告知用户，不要自行构建；源码构建只属于维护者本地开发，不属于本说明的部署流程。
 
 ## 7. 安全与隐私
 
 - 软件不联网、不上传；不要把它说成“云端脱敏”。
 - 不要在对话、Issue 或日志里粘贴真实案卷内容、身份证号、手机号。
 - 只从本项目 GitHub Releases 下载；不要从网盘/第三方转存。
-- 运行前核对 SHA256。
+- 不要修改文件、不要创建快捷方式或脚本、不要自行校验。
 - 脱敏结果仍需律师人工复核，不能承诺 100% 召回。
 
 ## 8. 完成标准（AI 自检）
 
 - [ ] 已判断系统、架构、Windows WebView2 状态；
-- [ ] 下载了匹配的包并校验 SHA256；
+- [ ] 只把匹配的包下载到了桌面（Windows 只额外解压到桌面）；
 - [ ] 在对话框里逐步告诉用户“双击哪个文件、桌面出现什么、再点哪个”；
 - [ ] 用户确认已看到三栏主界面；
 - [ ] 已说明导入、复核、导出、桌面默认目录和日志；
+- [ ] 没有安装/运行/移动/改名/打开安装包，没有创建快捷方式/CMD/脚本，没有执行源码构建；
 - [ ] 没有要求用户安装 Python/PaddleOCR/Node/Rust；
 - [ ] 没有上传或索要真实案卷内容。
